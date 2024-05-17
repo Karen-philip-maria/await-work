@@ -102,7 +102,86 @@ async function executeWithRetry(taskName, retries, failureProbability){
  
 executeWithRetry('Runtime', 2, 0);
 
+function LeanersTrackingProgress() {
+    this.quizzes = {};
+    this.progress = {};
+    this.addQuiz = function(language, proficiencyLevel, quiz) {
+        var key = language + " " + proficiencyLevel;
+        if (!this.quizzes[key]) {
+            this.quizzes[key] = [];
+        }
+        this.quizzes[key].push(quiz);
+    };
+    this.getQuizzes = function(language, proficiencyLevel) {
+        var key = language + " " + proficiencyLevel;
+        return this.quizzes[key]? this.quizzes[key] : [];
+    };
+    this.trackProgress = function(userId, correctAnswers) {
+        if (!this.progress[userId]) {
+            this.progress[userId] = 0;
+        }
+        this.progress[userId] += correctAnswers;
+    };
+    this.getProgress = function(userId) {
+        return this.progress[userId] || 0;
+    };
+}
+function main() {
+    var app = new LeanersTrackingProgress();
+    app.addQuiz("Kotlin", "Intermediate", "How do you use pointers to reverse a string?");
+    app.addQuiz("Python", "Beginner", "How does split work?");
+    var user1 = "Linet";
+    app.trackProgress(user1, 2);
+    console.log("User " + user1 + " progress: " + app.getProgress(user1) + " correct answers");
+    var englishIntermediateQuizzes = app.getQuizzes("Kotlin", "Intermediate");
+    console.log("Kotlin Intermediate Quizzes:");
+    englishIntermediateQuizzes.forEach(function(quiz, index) {
+        console.log((index + 1) + ". " + quiz);
+    });
+    var user2 = "Karen";
+    app.trackProgress(user2, 2);
+    console.log("User " + user2 + " progress: " + app.getProgress(user2) + " correct answers");
+    var javaScriptBeginnerQuizzes = app.getQuizzes("Python", "Beginner");
+    console.log("Python Beginner Quizzes:");
+    javaScriptBeginnerQuizzes.forEach(function(quiz, index) {
+        console.log((index + 1) + ". " + quiz);
+    });
+}
+main()
 
 
+class Weather {
+    constructor(windspeed, temperature, humidity) {
+        this.windspeed = windspeed;
+        this.temperature = temperature;
+        this.humidity = humidity;
+    }
+}
 
-/****************work*********************8 */
+class City {
+    constructor(name) {
+        this.name = name;
+        this.weatherData = [];
+    }
+
+    addWeather(windspeed, temperature, humidity) {
+        const weather = new Weather(windspeed, temperature, humidity);
+        this.weatherData.push(weather);
+    }
+
+    getWeatherData() {
+        return this.weatherData;
+    }
+}
+
+// Example usage
+const city = new City("New York");
+city.addWeather(10.5, 22.3, 65.0);
+city.addWeather(12.0, 24.1, 70.0);//
+
+console.log(`Weather data for ${city.name}:`);
+city.getWeatherData().forEach(weather => {
+    console.log(`Windspeed: ${weather.windspeed}, Temperature: ${weather.temperature}, Humidity: ${weather.humidity}`);
+}); 
+
+
